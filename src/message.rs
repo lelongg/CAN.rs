@@ -80,6 +80,8 @@ pub struct Message {
     length: u8,
     /// The data in this message
     data: [u8; 8],
+    // The rtr flag
+    rtr: bool
 }
 
 impl Message {
@@ -104,6 +106,13 @@ impl Message {
         } else {
             Err(RangeError::DataLength)
         }
+    }
+
+    /// Creates a message with a provided ID and data and rtr flag set to true
+    pub fn new_rtr<I: Into<Id>>(id: I, data: &[u8]) -> Result<Self, RangeError> {
+        let mut message = Self::new(id, data);
+        message.rtr = true;
+        Ok(message)
     }
 
     /// Creates a message with a provided short ID and data
@@ -149,6 +158,11 @@ impl Message {
     /// Returns a mutable reference to the data of this message
     pub fn data_mut(&mut self) -> &mut [u8] {
         &mut self.data[..usize::from(self.length)]
+    }
+    
+    /// Returns the rtr flag of this message
+    pub fn rtr(&self) -> bool {
+        self.rtr.clone()
     }
 }
 
