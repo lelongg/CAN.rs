@@ -19,7 +19,7 @@ pub use message::*;
 /// A trait for things that can send and receive CAN messages
 pub trait Can {
     /// The error type for this implementation
-    type Err: ::std::error::Error;
+    type Err;
     /// Sends a message
     fn send(&mut self, message: Message) -> Result<(), Self::Err>;
     /// Receives a message
