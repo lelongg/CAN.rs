@@ -87,6 +87,11 @@ pub struct Message {
 impl Message {
     /// Creates a message with a provided ID and data
     pub fn new<I: Into<Id>>(id: I, data: &[u8]) -> Result<Self, RangeError> {
+        Self::new_with_rtr(id, data, false)
+    }
+
+    /// Creates a message with a provided ID and data and rtr flag
+    pub fn new_with_rtr<I: Into<Id>>(id: I, data: &[u8], rtr: bool) -> Result<Self, RangeError> {
         let id = id.into();
         if data.len() <= 8 {
             if id.is_valid() {
@@ -94,6 +99,7 @@ impl Message {
                     id: id,
                     length: data.len() as u8,
                     data: [0; 8],
+                    rtr: rtr,
                 };
                 // Copy data
                 for i in 0..data.len() {
@@ -106,13 +112,6 @@ impl Message {
         } else {
             Err(RangeError::DataLength)
         }
-    }
-
-    /// Creates a message with a provided ID and data and rtr flag set to true
-    pub fn new_rtr<I: Into<Id>>(id: I, data: &[u8]) -> Result<Self, RangeError> {
-        let mut message = Self::new(id, data);
-        message.rtr = true;
-        Ok(message)
     }
 
     /// Creates a message with a provided short ID and data
